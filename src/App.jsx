@@ -13,6 +13,7 @@ export default function App(){
                     <Route path='/' element={<ListEmployeeComponent/>}></Route>
                     <Route path='/employee' element={<ListEmployeeComponent/>}></Route>
                     <Route path='/addEmployee' element={<EmployeeComponent/>}></Route>
+                    <Route path='/editEmployee:id' element={<EmployeeComponent/>}></Route>
                 </Routes>
                 <FooterComponent/>
             </BrowserRouter>
