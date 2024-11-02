@@ -1,11 +1,13 @@
-import React, {useState} from 'react'
-import {createEmployee} from "../services/EmployeeService.jsx";
-import {useNavigate} from "react-router-dom";
+import React, {useEffect, useState} from 'react'
+import {createEmployee, getEmployees, updateEmployee} from "../services/EmployeeService.jsx";
+import {useNavigate, useParams} from "react-router-dom";
 
 const EmployeeComponent = () => {
     const [firstname, setFirstname] = useState('')
     const [lastname, setLastname] = useState('')
     const [email, setEmail] = useState('')
+
+    const {id} = useParams();
 
     const [error, setError] = useState({
         firstname: '',
@@ -14,18 +16,40 @@ const EmployeeComponent = () => {
     })
 
     const navigator = useNavigate();
+    useEffect(()=>{
+        if(id){
+            getEmployees(id).then((response)=>{
+                setFirstname(response.data.firstname);
+                setLastname(response.data.lastname);
+                setEmail(response.data.email);
+            }).catch(error =>{
+                console.error(error)
+            })
+        }
+    }, [id])
 
-    function saveEmployee(e){
+    function saveOrUpdateEmployee(e){
         e.preventDefault();
-
         if(validateForm()){
+
             const employee = { firstname, lastname, email };
             console.log(employee);
 
-            createEmployee(employee).then((response) => {
-                console.log(response.data);
-                navigator('/employee');
-            })
+            if(id){
+                updateEmployee(id, employee).then((response)=>{
+                    console.log(response.data)
+                    navigator('/employee')
+                }).catch(error =>{
+                    console.error(error);
+                })
+            }else{
+                createEmployee(employee).then((response) => {
+                    console.log(response.data);
+                    navigator('/employee');
+                }).catch(error =>{
+                    console.error(error);
+                })
+            }
         }
     }
     function validateForm(){
@@ -53,13 +77,24 @@ const EmployeeComponent = () => {
         return valid;
     }
 
+    function pageTitle(){
+        if (id) {
+           return <h2 className='text-center'>Update Employee</h2>
+        }else {
+            return <h2 className='text-center'>Add Employee</h2>
+        }
+    }
+
+
     return (
         <div className='container'>
             <br/>
             <br/>
             <div className='row'>
                 <div className='card col-md-6 offset-md-3 offset-md-3'>
-                    <h2 className='text-center' >Add Employee</h2>
+                    {
+                        pageTitle()
+                    }
                     <div className='card-body'>
                         <form>
                             <div className='form-group mb-2'>
@@ -101,7 +136,7 @@ const EmployeeComponent = () => {
                                 {error.email && <div className='invalid-feedback'>{error.email}</div>}
                             </div>
 
-                            <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
+                            <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
                         </form>
                     </div>
                 </div>
