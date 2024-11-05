@@ -46,6 +46,7 @@ const ListDepartmentComponent = () => {
                     <th className='w-25 te'>Action</th>
                 </tr>
                 </thead>
+
                 <tbody>
                     {department.map((department)=>
                          <tr key={department.id}>
