@@ -1,12 +1,23 @@
 import React, {useEffect, useState} from 'react'
 import {createEmployee, getEmployees, updateEmployee} from "../services/EmployeeService.jsx";
 import {useNavigate, useParams} from "react-router-dom";
+import {getAllDepartments} from "../services/DepartmentService.jsx";
 
 const EmployeeComponent = () => {
     const [firstname, setFirstname] = useState('')
     const [lastname, setLastname] = useState('')
     const [email, setEmail] = useState('')
+    const [departmentId, setDepartmentId] = useState('')
+    const [departments, setDepartments] = useState([])
 
+
+    useEffect(()=>{
+       getAllDepartments().then((response)=>{
+           setDepartments(response.data);
+       }).catch(error=>{
+           console.error(error);
+       })
+    },[])
     const {id} = useParams();
 
     const [error, setError] = useState({
@@ -104,8 +115,8 @@ const EmployeeComponent = () => {
                                     placeholder='Enter First Name: '
                                     name='firstname'
                                     value={firstname}
-                                    className={`form-control ${error.firstname ? 'is-invalid':''}`}
-                                    onChange={(e) =>setFirstname(e.target.value)}
+                                    className={`form-control ${error.firstname ? 'is-invalid' : ''}`}
+                                    onChange={(e) => setFirstname(e.target.value)}
                                 ></input>
                                 {error.firstname && <div className='invalid-feedback'>{error.firstname}</div>}
                             </div>
@@ -117,8 +128,8 @@ const EmployeeComponent = () => {
                                     placeholder='Enter Last Name: '
                                     name='firstname'
                                     value={lastname}
-                                    className={`form-control ${error.lastname ? 'is-invalid':''}`}
-                                    onChange={(e) =>setLastname(e.target.value)}
+                                    className={`form-control ${error.lastname ? 'is-invalid' : ''}`}
+                                    onChange={(e) => setLastname(e.target.value)}
                                 ></input>
                                 {error.lastname && <div className='invalid-feedback'>{error.lastname}</div>}
                             </div>
@@ -130,8 +141,20 @@ const EmployeeComponent = () => {
                                     placeholder='Enter Email: '
                                     name='email'
                                     value={email}
-                                    className={`form-control ${error.email ? 'is-invalid':''}`}
-                                    onChange={(e) =>setEmail(e.target.value)}
+                                    className={`form-control ${error.email ? 'is-invalid' : ''}`}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                ></input>
+                                {error.email && <div className='invalid-feedback'>{error.email}</div>}
+                            </div>
+                            <div className='form-group mb-2'>
+                                <label className='form-label'>: </label>
+                                <input
+                                    type='text'
+                                    placeholder='Enter Email: '
+                                    name='email'
+                                    value={email}
+                                    className={`form-control ${error.email ? 'is-invalid' : ''}`}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 ></input>
                                 {error.email && <div className='invalid-feedback'>{error.email}</div>}
                             </div>
